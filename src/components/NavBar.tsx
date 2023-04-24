@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { TbRobot } from "react-icons/tb";
 import { MdKeyboardVoice } from "react-icons/md";
@@ -34,6 +34,7 @@ export default function NavBar({
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
+  const [fileName, setFileName] = React.useState("Texto");
   const [downloadingPdf, setDownloadingPdf] = React.useState(false);
 
   const downloadRaw = () => {
@@ -42,7 +43,7 @@ export default function NavBar({
       type: "text/plain",
     });
     element.href = URL.createObjectURL(file);
-    element.download = Date.now().toString() + ".txt";
+    element.download = fileName + ".txt";
     // For firefox
     document.body.appendChild(element);
     element.click();
@@ -57,13 +58,13 @@ export default function NavBar({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ data: content }),
+        body: JSON.stringify({ fileName: fileName, data: content }),
       });
 
       const element = document.createElement("a");
       const file = await response.blob();
       element.href = URL.createObjectURL(file);
-      element.download = Date.now().toString() + ".pdf";
+      element.download = fileName + ".pdf";
       // For firefox
       document.body.appendChild(element);
       element.click();
@@ -85,14 +86,13 @@ export default function NavBar({
       <Box sx={{ flexGrow: 1, height: "65px" }}>
         <AppBar position="static" elevation={3}>
           <Toolbar>
-            <Typography
-              variant="h5"
-              fontWeight={600}
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              Texto
-            </Typography>
+            <input
+              type="text"
+              className="navbar-file-name"
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+              spellCheck={false}
+            />
 
             <IconButton
               size="large"
