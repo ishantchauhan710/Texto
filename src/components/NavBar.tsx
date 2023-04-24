@@ -34,7 +34,9 @@ export default function NavBar({
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
-  const exportRaw = () => {
+  const [downloadingPdf, setDownloadingPdf] = React.useState(false);
+
+  const downloadRaw = () => {
     const element = document.createElement("a");
     const file = new Blob([content], {
       type: "text/plain",
@@ -44,6 +46,33 @@ export default function NavBar({
     // For firefox
     document.body.appendChild(element);
     element.click();
+    element.remove();
+  };
+
+  const downloadPdf = async () => {
+    setDownloadingPdf(true);
+    try {
+      const response = await fetch("/api/pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: content }),
+      });
+
+      const element = document.createElement("a");
+      const file = await response.blob();
+      element.href = URL.createObjectURL(file);
+      element.download = Date.now().toString() + ".pdf";
+      // For firefox
+      document.body.appendChild(element);
+      element.click();
+      element.remove();
+    } catch (err) {
+      alert(err);
+    } finally {
+      setDownloadingPdf(false);
+    }
   };
 
   return (
@@ -85,7 +114,7 @@ export default function NavBar({
 
             <IconButton
               sx={{ color: "#ffffff", marginRight: 2 }}
-              onClick={() => exportRaw()}
+              onClick={() => downloadRaw()}
             >
               <BiCodeAlt />
             </IconButton>
@@ -101,8 +130,10 @@ export default function NavBar({
                 },
               }}
               startIcon={<FaCloudDownloadAlt />}
+              onClick={() => downloadPdf()}
+              disabled={downloadingPdf}
             >
-              Save
+              {downloadingPdf ? "Wait" : "Save"}
             </Button>
           </Toolbar>
         </AppBar>
