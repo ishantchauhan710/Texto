@@ -20,12 +20,14 @@ interface NavBarProps {
   setShowAiGenerator: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSpeechDialog: React.Dispatch<React.SetStateAction<boolean>>;
   content: string;
+  setShowDrawerMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function NavBar({
   setShowAiGenerator,
   setShowSpeechDialog,
   content,
+  setShowDrawerMenu,
 }: NavBarProps) {
   const {
     transcript,
@@ -38,6 +40,11 @@ export default function NavBar({
   const [downloadingPdf, setDownloadingPdf] = React.useState(false);
 
   const downloadRaw = () => {
+    if (!content || content.length == 0) {
+      alert("Unable to save empty document");
+      return;
+    }
+
     const element = document.createElement("a");
     const file = new Blob([content], {
       type: "text/plain",
@@ -51,6 +58,11 @@ export default function NavBar({
   };
 
   const downloadPdf = async () => {
+    if (!content || content.length == 0) {
+      alert("Unable to save empty document");
+      return;
+    }
+
     setDownloadingPdf(true);
     try {
       const response = await fetch("/api/pdf", {
@@ -86,6 +98,16 @@ export default function NavBar({
       <Box sx={{ flexGrow: 1, height: "65px" }}>
         <AppBar position="static" elevation={3}>
           <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={() => setShowDrawerMenu(true)}
+            >
+              <MenuIcon />
+            </IconButton>
             <input
               type="text"
               className="navbar-file-name"

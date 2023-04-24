@@ -22,6 +22,7 @@ export default function TextEditor({ content, setContent }: TextEditorProps) {
       id="texto-document"
       style={{ height: "calc(100vh - 65px)" }}
       renderHTML={(text) => mdParser.render(text)}
+      value={content}
       onChange={(e) => setContent(e.text)}
     />
   );

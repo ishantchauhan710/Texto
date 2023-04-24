@@ -4,13 +4,30 @@ import { Button } from "@mui/material";
 import NavBar from "@/components/NavBar";
 import TextEditor from "@/components/TextEditor";
 import AiGenerator from "@/components/AiGenerator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SpeechDialog from "@/components/SpeechDialog";
+import DrawerMenu from "@/components/DrawerMenu";
 
 export default function Home() {
   const [showAiGenerator, setShowAiGenerator] = useState(false);
   const [showSpeechDialog, setShowSpeechDialog] = useState(false);
   const [content, setContent] = useState("");
+  const [showDrawerMenu, setShowDrawerMenu] = useState(false);
+
+  useEffect(() => {
+    const cache = localStorage.getItem("data");
+    if (cache && cache.length > 0) {
+      setContent(cache);
+    }
+    window.addEventListener("beforeunload", (ev) => {
+      ev.preventDefault();
+      return (ev.returnValue = "Are you sure you want to close?");
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("data", content);
+  }, [content]);
 
   return (
     <>
@@ -27,6 +44,7 @@ export default function Home() {
           setShowAiGenerator={setShowAiGenerator}
           setShowSpeechDialog={setShowSpeechDialog}
           content={content}
+          setShowDrawerMenu={setShowDrawerMenu}
         />
         <TextEditor content={content} setContent={setContent} />
         <AiGenerator
@@ -34,6 +52,10 @@ export default function Home() {
           setShowDrawer={setShowAiGenerator}
         />
         <SpeechDialog open={showSpeechDialog} setOpen={setShowSpeechDialog} />
+        <DrawerMenu
+          showDrawerMenu={showDrawerMenu}
+          setShowDrawerMenu={setShowDrawerMenu}
+        />
       </main>
     </>
   );
