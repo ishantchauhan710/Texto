@@ -10,6 +10,7 @@ import SpeechDialog from "@/components/SpeechDialog";
 export default function Home() {
   const [showAiGenerator, setShowAiGenerator] = useState(false);
   const [showSpeechDialog, setShowSpeechDialog] = useState(false);
+  const [content, setContent] = useState("");
 
   return (
     <>
@@ -25,8 +26,9 @@ export default function Home() {
         <NavBar
           setShowAiGenerator={setShowAiGenerator}
           setShowSpeechDialog={setShowSpeechDialog}
+          content={content}
         />
-        <TextEditor />
+        <TextEditor content={content} setContent={setContent} />
         <AiGenerator
           showDrawer={showAiGenerator}
           setShowDrawer={setShowAiGenerator}

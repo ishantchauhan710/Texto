@@ -19,11 +19,13 @@ import { jsPDF } from "jspdf";
 interface NavBarProps {
   setShowAiGenerator: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSpeechDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  content: string;
 }
 
 export default function NavBar({
   setShowAiGenerator,
   setShowSpeechDialog,
+  content,
 }: NavBarProps) {
   const {
     transcript,
@@ -31,6 +33,18 @@ export default function NavBar({
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  const exportRaw = () => {
+    const element = document.createElement("a");
+    const file = new Blob([content], {
+      type: "text/plain",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = Date.now().toString() + ".txt";
+    // For firefox
+    document.body.appendChild(element);
+    element.click();
+  };
 
   return (
     <>
@@ -69,7 +83,10 @@ export default function NavBar({
               <TbRobot />
             </IconButton>
 
-            <IconButton sx={{ color: "#ffffff", marginRight: 2 }}>
+            <IconButton
+              sx={{ color: "#ffffff", marginRight: 2 }}
+              onClick={() => exportRaw()}
+            >
               <BiCodeAlt />
             </IconButton>
 

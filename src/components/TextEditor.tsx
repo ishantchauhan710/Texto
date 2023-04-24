@@ -1,3 +1,4 @@
+import React from "react";
 import dynamic from "next/dynamic";
 import "react-markdown-editor-lite/lib/index.css";
 import MarkdownIt from "markdown-it";
@@ -10,12 +11,18 @@ const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
 
 const mdParser = new MarkdownIt();
 
-export default function TextEditor() {
+interface TextEditorProps {
+  content: string;
+  setContent: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function TextEditor({ content, setContent }: TextEditorProps) {
   return (
     <MdEditor
       id="texto-document"
       style={{ height: "calc(100vh - 65px)" }}
       renderHTML={(text) => mdParser.render(text)}
+      onChange={(e) => setContent(e.text)}
     />
   );
 }
