@@ -27,7 +27,7 @@ export default function SpeechDialog({ open, setOpen }: SpeechDialogProps) {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        <Box minWidth={500} sx={{ padding: 2 }}>
+        <Box minWidth={"45vw"} sx={{ padding: 2 }}>
           <h2>Speak and Write</h2>
           <p>Status: {listening ? "Listening" : "Off"}</p>
           <Box sx={{ margin: "10px 0px" }}>
@@ -62,6 +62,7 @@ export default function SpeechDialog({ open, setOpen }: SpeechDialogProps) {
             placeholder="Click on the start button and speak something!"
             fullWidth
             multiline
+            minRows={2}
             maxRows={6}
             value={transcript}
           />
