@@ -1,13 +1,18 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { Button, TextField } from "@mui/material";
 import { toast } from "react-toastify";
+import {
+  Configuration,
+  CreateCompletionResponseChoicesInner,
+  OpenAIApi,
+} from "openai";
 
 interface GeneratedContentProps {
-    contentText: string
+  contentText: string;
 }
-const GeneratedContent = ({contentText}: GeneratedContentProps) => {
+const GeneratedContent = ({ contentText }: GeneratedContentProps) => {
   return (
     <Box
       sx={{
@@ -31,10 +36,7 @@ const GeneratedContent = ({contentText}: GeneratedContentProps) => {
         toast("Text copied to clipboard", { type: "info" });
       }}
     >
-      The ButtonBase component sets pointer-events: none; on disabled buttons,
-      which prevents the appearance of a disabled cursor. The ButtonBase
-      component sets pointer-events: none; on disabled buttons, which prevents
-      the appearance of a disabled cursor.
+      {contentText}
     </Box>
   );
 };
@@ -48,32 +50,56 @@ export default function AiGenerator({
   showDrawer,
   setShowDrawer,
 }: AiGeneratorProps) {
-  const list = () => (
-    <Box sx={{ width: "35vw", p: 2 }} role="presentation">
-      <Box>
-        <TextField
-          fullWidth
-          placeholder="Write something to automatically generate content. Minimum input should be of atleast 10 words."
-          multiline
-          rows={5}
-          className="aigenerator-textfield"
-        />
-        <Button
-          variant="contained"
-          fullWidth
-          size="small"
-          sx={{ marginTop: 1 }}
-        >
-          Generate
-        </Button>
-      </Box>
-      <Box>
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <GeneratedContent key={i} contentText={i.toString()} />
-        ))}
-      </Box>
-    </Box>
-  );
+  const [inputAiText, setInputAiText] = useState("");
+  const [loadingAiContent, setLoadingAiContent] = useState(false);
+  const [generatedAiContent, setGeneratedAiContent] =
+    useState<CreateCompletionResponseChoicesInner[]>();
+
+  const generateAiContent = async () => {
+    let inputText = inputAiText;
+
+    if (loadingAiContent) {
+      return;
+    }
+
+    if (!inputText) {
+      toast("Input text cannot be empty", { type: "error" });
+      return;
+    }
+    if (inputText.split(" ").length < 10) {
+      toast("Input text should contain atleast ten words", { type: "error" });
+      return;
+    }
+
+    setLoadingAiContent(true);
+
+    const configuration = new Configuration({
+      apiKey: process.env.NEXT_PUBLIC_AI_API_KEY,
+    });
+
+    const openai = new OpenAIApi(configuration);
+
+    try {
+      const response = await openai.createCompletion({
+        model: "text-davinci-002",
+        prompt: inputText,
+        max_tokens: 40,
+        temperature: 0.9,
+        n: 5,
+        echo: true,
+      });
+
+      const content = response.data.choices;
+      setGeneratedAiContent(content);
+      setLoadingAiContent(false);
+    } catch (e) {
+      toast(
+        "Unable to generate AI content, it seems your credits have crossed the daily usage limit",
+        { type: "error" }
+      );
+      setLoadingAiContent(false);
+    }
+  };
 
   return (
     <div>
@@ -85,7 +111,38 @@ export default function AiGenerator({
             open={showDrawer}
             onClose={() => setShowDrawer(false)}
           >
-            {list()}
+            <Box sx={{ width: "35vw", p: 2 }} role="presentation">
+              <Box>
+                <TextField
+                  fullWidth
+                  placeholder="Write something to automatically generate content. Minimum input should be of atleast 10 words."
+                  multiline
+                  rows={5}
+                  className="aigenerator-textfield"
+                  value={inputAiText}
+                  onChange={(e) => setInputAiText(e.target.value)}
+                />
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="small"
+                  sx={{ marginTop: 1 }}
+                  disabled={loadingAiContent}
+                  onClick={() => generateAiContent()}
+                >
+                  {loadingAiContent ? "Loading..." : "Generate"}
+                </Button>
+              </Box>
+              <Box>
+                {generatedAiContent &&
+                  generatedAiContent.map((content, i) => (
+                    <GeneratedContent
+                      key={i}
+                      contentText={content.text ? content.text : "null"}
+                    />
+                  ))}
+              </Box>
+            </Box>
           </Drawer>
         </React.Fragment>
       ))}
