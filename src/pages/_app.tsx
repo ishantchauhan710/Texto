@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material";
 import type { AppProps } from "next/app";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import 'regenerator-runtime/runtime'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

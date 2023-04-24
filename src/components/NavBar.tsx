@@ -9,57 +9,87 @@ import { Button } from "@mui/material";
 import { FaCloudDownloadAlt } from "react-icons/fa";
 import { TbRobot } from "react-icons/tb";
 import { MdKeyboardVoice } from "react-icons/md";
+import { BiCodeAlt } from "react-icons/bi";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 interface NavBarProps {
   setShowAiGenerator: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSpeechDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function NavBar({ setShowAiGenerator }: NavBarProps) {
+export default function NavBar({
+  setShowAiGenerator,
+  setShowSpeechDialog,
+}: NavBarProps) {
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
   return (
-    <Box sx={{ flexGrow: 1, height: "65px" }}>
-      <AppBar position="static" elevation={3}>
-        <Toolbar>
-          <Typography
-            variant="h5"
-            fontWeight={600}
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-            Texto
-          </Typography>
+    <>
+      {!browserSupportsSpeechRecognition && (
+        <Box sx={{ background: "#f97316", color: "white", padding: "4px 0px" }}>
+          Your browser does not support speech recognition
+        </Box>
+      )}
+      <Box sx={{ flexGrow: 1, height: "65px" }}>
+        <AppBar position="static" elevation={3}>
+          <Toolbar>
+            <Typography
+              variant="h5"
+              fontWeight={600}
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
+              Texto
+            </Typography>
 
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ transform: "scale(0.9)" }}
-          >
-            <MdKeyboardVoice />
-          </IconButton>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ transform: "scale(0.9)", marginRight: "-5px" }}
+              onClick={() => setShowSpeechDialog(true)}
+            >
+              <MdKeyboardVoice />
+            </IconButton>
 
-          <IconButton
-            sx={{ color: "#ffffff", marginRight: 2 }}
-            onClick={() => setShowAiGenerator(true)}
-          >
-            <TbRobot />
-          </IconButton>
-          <Button
-            variant="contained"
-            disableElevation
-            sx={{
-              backgroundColor: "rgba(255,255,255,1)",
-              color: "primary.main",
-              "&:hover": {
-                backgroundColor: "rgba(255,255,255,0.95)",
-              },
-            }}
-            startIcon={<FaCloudDownloadAlt />}
-          >
-            Save
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+            <IconButton
+              sx={{ color: "#ffffff" }}
+              onClick={() => setShowAiGenerator(true)}
+            >
+              <TbRobot />
+            </IconButton>
+
+            <IconButton sx={{ color: "#ffffff", marginRight: 2 }}>
+              <BiCodeAlt />
+            </IconButton>
+
+            <Button
+              variant="contained"
+              disableElevation
+              sx={{
+                backgroundColor: "rgba(255,255,255,1)",
+                color: "primary.main",
+                "&:hover": {
+                  backgroundColor: "rgba(255,255,255,0.95)",
+                },
+              }}
+              startIcon={<FaCloudDownloadAlt />}
+            >
+              Save
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    </>
   );
 }

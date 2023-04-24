@@ -5,9 +5,11 @@ import NavBar from "@/components/NavBar";
 import TextEditor from "@/components/TextEditor";
 import AiGenerator from "@/components/AiGenerator";
 import { useState } from "react";
+import SpeechDialog from "@/components/SpeechDialog";
 
 export default function Home() {
-  const [showAiGenerator, setShowAiGenerator] = useState(true);
+  const [showAiGenerator, setShowAiGenerator] = useState(false);
+  const [showSpeechDialog, setShowSpeechDialog] = useState(false);
 
   return (
     <>
@@ -20,12 +22,16 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main>
-        <NavBar setShowAiGenerator={setShowAiGenerator} />
+        <NavBar
+          setShowAiGenerator={setShowAiGenerator}
+          setShowSpeechDialog={setShowSpeechDialog}
+        />
         <TextEditor />
         <AiGenerator
           showDrawer={showAiGenerator}
           setShowDrawer={setShowAiGenerator}
         />
+        <SpeechDialog open={showSpeechDialog} setOpen={setShowSpeechDialog} />
       </main>
     </>
   );
