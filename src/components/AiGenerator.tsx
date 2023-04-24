@@ -2,22 +2,33 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { Button, TextField } from "@mui/material";
+import { toast } from "react-toastify";
 
-const GeneratedContent = () => {
+interface GeneratedContentProps {
+    contentText: string
+}
+const GeneratedContent = ({contentText}: GeneratedContentProps) => {
   return (
     <Box
       sx={{
         padding: "10px 10px",
-        marginTop: "10px",
+        marginTop: "15px",
         backgroundColor: "#f9f9f9",
         borderRadius: "10px",
         color: "#333333",
-        boxShadow: "2px 4px 10px rgba(0,0,0,0.07)",
+        border: "1px solid rgba(0,0,0,0.2)",
+        boxShadow: "2px 6px 15px rgba(0,0,0,0.1)",
         fontSize: "0.9rem",
         cursor: "pointer",
+        transition: "all 0.5s",
         "&:hover": {
-          backgroundColor: "#f1f1f1",
+          boder: "rgba(37, 99, 235,0.2)",
+          backgroundColor: "rgba(37, 99, 235,0.2)",
         },
+      }}
+      onClick={() => {
+        navigator.clipboard.writeText(contentText);
+        toast("Text copied to clipboard", { type: "info" });
       }}
     >
       The ButtonBase component sets pointer-events: none; on disabled buttons,
@@ -44,7 +55,7 @@ export default function AiGenerator({
           fullWidth
           placeholder="Write something to automatically generate content. Minimum input should be of atleast 10 words."
           multiline
-          rows={4}
+          rows={5}
           className="aigenerator-textfield"
         />
         <Button
@@ -58,7 +69,7 @@ export default function AiGenerator({
       </Box>
       <Box>
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <GeneratedContent key={i} />
+          <GeneratedContent key={i} contentText={i.toString()} />
         ))}
       </Box>
     </Box>
