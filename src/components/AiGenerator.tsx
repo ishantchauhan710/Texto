@@ -66,8 +66,8 @@ export default function AiGenerator({
       toast("Input text cannot be empty", { type: "error" });
       return;
     }
-    if (inputText.split(" ").length < 10) {
-      toast("Input text should contain atleast ten words", { type: "error" });
+    if (inputText.split(" ").length < 5) {
+      toast("Input text should contain atleast five words", { type: "error" });
       return;
     }
 
@@ -115,7 +115,7 @@ export default function AiGenerator({
               <Box>
                 <TextField
                   fullWidth
-                  placeholder="Write something to automatically generate content. Minimum input should be of atleast 10 words."
+                  placeholder="Write something to automatically generate content. Minimum input should be of atleast 5 words."
                   multiline
                   rows={5}
                   className="aigenerator-textfield"
