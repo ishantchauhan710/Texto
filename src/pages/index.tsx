@@ -19,10 +19,6 @@ export default function Home() {
     if (cache && cache.length > 0) {
       setContent(cache);
     }
-    window.addEventListener("beforeunload", (ev) => {
-      ev.preventDefault();
-      return (ev.returnValue = "Are you sure you want to close?");
-    });
   }, []);
 
   useEffect(() => {

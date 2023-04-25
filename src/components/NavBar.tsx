@@ -74,11 +74,10 @@ export default function NavBar({
       });
 
       const element = document.createElement("a");
-      const file = await response.blob();
+      const fileBuffer = await response.blob();
+      var file = new Blob([fileBuffer], { type: "application/pdf" });
       element.href = URL.createObjectURL(file);
       element.download = fileName;
-      // For firefox
-      document.body.appendChild(element);
       element.click();
       element.remove();
     } catch (err) {
