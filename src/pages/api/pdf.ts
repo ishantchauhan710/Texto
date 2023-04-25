@@ -9,17 +9,24 @@ export default async function handler(
   const method = req.method;
 
   if (method === "POST") {
-    const fileName = req.body.fileName;
-    const content = req.body.data;
-    console.log(content)
-    if (content) {
-      const pdf = await mdToPdf({ content: content });
-      const pdfBuffer = pdf.content;
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `attachment; filename=${fileName}.pdf`);
-      res.status(200).send(pdfBuffer);
-    } else {
-      res.status(401);
+    try {
+      const fileName = req.body.fileName;
+      const content = req.body.data;
+      console.log(content);
+      if (content) {
+        const pdf = await mdToPdf({ content: content });
+        const pdfBuffer = pdf.content;
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename=${fileName}.pdf`
+        );
+        res.status(200).send(pdfBuffer);
+      } else {
+        res.status(401);
+      }
+    } catch (err) {
+      res.status(500).send(err);
     }
   }
 }
