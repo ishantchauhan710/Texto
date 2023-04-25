@@ -76,7 +76,7 @@ export default function NavBar({
       const element = document.createElement("a");
       const file = await response.blob();
       element.href = URL.createObjectURL(file);
-      element.download = fileName + ".pdf";
+      element.download = fileName;
       // For firefox
       document.body.appendChild(element);
       element.click();

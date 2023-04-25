@@ -67,7 +67,7 @@ export default function AiGenerator({
       return;
     }
     if (inputText.split(" ").length < 5) {
-      toast("Input text should contain atleast five words", { type: "error" });
+      toast("Input dtext should contain atleast five words", { type: "error" });
       return;
     }
 

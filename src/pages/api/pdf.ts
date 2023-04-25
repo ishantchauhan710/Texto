@@ -17,7 +17,7 @@ export default async function handler(
       const pdfBuffer = pdf.content;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `attachment; filename=${fileName}.pdf`);
-      res.send(pdfBuffer);
+      res.status(200).send(pdfBuffer);
     } else {
       res.status(401);
     }
